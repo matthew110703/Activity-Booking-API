@@ -17,6 +17,7 @@ app.get("/api/v1", (req, res) => {
   });
 });
 app.use("/api/v1/auth", require("./routes/authRoutes").default);
+app.use("/api/v1/activities", require("./routes/activityRoutes").default);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

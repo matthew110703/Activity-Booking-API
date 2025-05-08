@@ -33,6 +33,15 @@ const activitySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+activitySchema.index({
+  title: "text",
+  description: "text",
+  location: "text",
+  date: 1,
+}); // Create a text index for searching activities by title, description, and location
+// and a date index for sorting by date
+activitySchema.index({ createdAt: -1 }); // Create an index for sorting by createdAt in descending order
+
 const Activity = mongoose.model("Activity", activitySchema);
 export default Activity;
 
