@@ -10,15 +10,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
 
-const PORT = process.env.PORT || 3001;
-
-app.get("/api", (req, res) => {
+app.get("/api/v1", (req, res) => {
   res.json({
     status: "OK",
     message: "Server is live and running!",
   });
 });
+app.use("/api/v1/auth", require("./routes/authRoutes").default);
 
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
