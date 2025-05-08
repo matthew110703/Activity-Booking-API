@@ -28,9 +28,14 @@ app.get("/api/v1", (req, res) => {
     message: "Server is live and running!",
   });
 });
-app.use("/api/v1/auth", require("./routes/authRoutes").default);
-app.use("/api/v1/activities", require("./routes/activityRoutes").default);
-app.use("/api/v1/bookings", require("./routes/bookingRoutes").default);
+// Routes
+import authRoutes from "./routes/authRoutes";
+import activityRoutes from "./routes/activityRoutes";
+import bookingRoutes from "./routes/bookingRoutes";
+
+app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/activities", activityRoutes);
+app.use("/api/v1/bookings", bookingRoutes);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

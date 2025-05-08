@@ -57,6 +57,7 @@ export const signup: RequestHandler = async (req, res) => {
       },
     });
   } catch (e) {
+    if (process.env.NODE_ENV === "development") console.error(e);
     return sendError(res, 500, "Something went wrong! Please try again later.");
   }
 };
