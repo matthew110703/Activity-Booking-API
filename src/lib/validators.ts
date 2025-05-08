@@ -110,20 +110,33 @@ export const activityQueryValidator = [
     .escape()
     .isLength({ max: 50 })
     .withMessage("Search query must be less than 50 characters."),
+
   query("page")
     .optional()
     .isInt({ min: 1 })
+    .toInt()
     .withMessage("Page must be a positive integer."),
+
   query("limit")
     .optional()
     .isInt({ min: 1, max: 100 })
+    .toInt()
     .withMessage("Limit must be a positive integer between 1 and 100."),
+
   query("sortBy")
     .optional()
-    .isIn(["title", "date", "time", "createdAt"])
-    .withMessage(
-      "Sort by must be one of the following: title, date, time, createdAt."
-    ),
+    .custom((value) => {
+      // You are using `sortBy=field:order` in your logic
+      const [field, order] = value.split(":");
+      const allowedFields = ["title", "date", "time", "createdAt"];
+      const allowedOrders = ["asc", "desc"];
+      if (!allowedFields.includes(field) || !allowedOrders.includes(order)) {
+        throw new Error(
+          "SortBy must be in format field:order with valid values."
+        );
+      }
+      return true;
+    }),
 ];
 
 // Validation for activity ID

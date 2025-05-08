@@ -5,6 +5,13 @@ import Activity from "../models/activity.model";
 
 // Types
 import { ActivityType, ActivityDocument } from "../models/activity.model";
+import { FilterQuery } from "mongoose";
+type QueryType = {
+  q?: string;
+  sortBy?: string;
+  page?: number;
+  limit?: number;
+};
 type OptionsType = {
   page: number;
   limit: number;
@@ -22,32 +29,30 @@ export const getActivities: RequestHandler = async (req, res) => {
 
   try {
     // Fetch query parameters
-    const { page = 1, limit = 10 } = matchedData(req, {
-      includeOptionals: true,
-    });
+    const { page = 1, limit = 10, q, sortBy } = req.query as QueryType;
+    console.log("Query Parameters:", { page, limit, q, sortBy });
 
     const skip = (page - 1) * limit;
-    const query: { [key: string]: object } = {};
+    const query: FilterQuery<ActivityDocument> = {};
+
     const options: OptionsType = {
-      page: Number(page),
-      limit: Number(limit),
-      skip: Number(skip),
+      page,
+      limit,
+      skip,
     };
 
-    // Check if search query is provided
-    if (req.query.q) {
-      const searchQuery = req.query.q as string;
+    // Handle search query
+    if (q) {
       query["$or"] = [
-        { title: { $regex: searchQuery, $options: "i" } },
-        { description: { $regex: searchQuery, $options: "i" } },
-        { location: { $regex: searchQuery, $options: "i" } },
+        { title: { $regex: q, $options: "i" } },
+        { description: { $regex: q, $options: "i" } },
+        { location: { $regex: q, $options: "i" } },
       ];
     }
 
-    // Check if sortBy is provided
-    if (req.query.sortBy) {
-      const sortOptions =
-        typeof req.query.sortBy === "string" ? req.query.sortBy.split(":") : [];
+    // Handle sorting
+    if (sortBy) {
+      const sortOptions = sortBy.split(":");
       const field = sortOptions[0];
       const order = sortOptions[1] === "desc" ? -1 : 1;
       options["sort"] = { [field]: order };
@@ -56,11 +61,11 @@ export const getActivities: RequestHandler = async (req, res) => {
     }
 
     // Fetch activities with pagination and search
-    const activities: Array<ActivityDocument> = await Activity.find(
-      query,
-      "-__v",
-      options
-    );
+    const activities = await Activity.find(query, "-__v")
+      .sort(options.sort as any)
+      .skip(options.skip)
+      .limit(options.limit);
+
     const count = await Activity.countDocuments(query);
 
     // Check if activities are found
@@ -73,7 +78,7 @@ export const getActivities: RequestHandler = async (req, res) => {
       return sendError(res, 404, "Page not found!");
     }
 
-    return sendSuccess(res, 200, "Activities retrieved Successfully.", {
+    return sendSuccess(res, 200, "Activities retrieved successfully.", {
       totalItems: count,
       currentPage: Number(page),
       totalPages: Math.ceil(count / limit),
