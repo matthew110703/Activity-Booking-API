@@ -1,4 +1,5 @@
-import "dotenv/config";
+import "dotenv/config"; // Load environment variables from .env file
+import "./config/connectDB"; // Database connection
 import express from "express";
 import morgan from "morgan";
 
