@@ -37,6 +37,11 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/activities", activityRoutes);
 app.use("/api/v1/bookings", bookingRoutes);
 
+// Error handling middleware
+import { notFound, errorHandler } from "./middleware/error.middleware";
+app.use(notFound); // 404 Not Found
+app.use(errorHandler); // General error handler
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   if (process.env.NODE_ENV === "development")
