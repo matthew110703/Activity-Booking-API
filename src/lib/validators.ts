@@ -1,4 +1,4 @@
-import { body, query } from "express-validator";
+import { body, query, param } from "express-validator";
 
 // Validation for signup
 export const signupValidator = [
@@ -124,4 +124,13 @@ export const activityQueryValidator = [
     .withMessage(
       "Sort by must be one of the following: title, date, time, createdAt."
     ),
+];
+
+// Validation for activity ID
+export const activityIdValidator = [
+  param("activityId")
+    .notEmpty()
+    .withMessage("Activity ID is required.")
+    .isMongoId()
+    .withMessage("Activity ID is not valid."),
 ];
