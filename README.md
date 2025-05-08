@@ -70,7 +70,7 @@ Follow these steps to run the project locally:
 
 ## API Endpoints
 - Base Url - https://activity-booking-api-8mhq.onrender.com (It might take some time to load. Please be patient;)
-- [Postman API Collection](https://.postman.co/workspace/My-Workspace~229148f6-58d6-4d8c-8791-3288c38be632/collection/32041108-2940ad66-1f63-47f7-9bcb-99807159ce69?action=share&creator=32041108) (If testing in localhost change the collection env variable `base_url` to `localhost:3000/api/v1`)
+- [Postman API Collection](https://postman.co/workspace/My-Workspace~229148f6-58d6-4d8c-8791-3288c38be632/collection/32041108-2940ad66-1f63-47f7-9bcb-99807159ce69?action=share&creator=32041108) (If testing in localhost change the collection env variable `base_url` to `localhost:3000/api/v1`)
 
   
 - `GET /api/v1` - Get the current status of the API.
